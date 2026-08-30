@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Environment variables (if you add API keys/config later)
+.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS-generated files (Windows)
+Thumbs.db
+desktop.ini
+
+# Editor folders
+.vscode/
+.idea/
+
+# Selenium/test artifacts (screenshots, reports if you add them later)
+screenshots/
+test-results/
+mochawesome-report/
