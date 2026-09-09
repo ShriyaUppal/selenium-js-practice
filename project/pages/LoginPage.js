@@ -15,6 +15,12 @@ class LoginPage{
         let button = await this.driver.findElement(this.loginButton);
         await this.driver.executeScript('arguments[0].click();', button);
     }
+
+    async getErrorMessage()
+    {
+        let errElement = await this.driver.findElement(By.xpath("//p[text()='Your email or password is incorrect!']"));
+        return await errElement.getText();
+    }
 }
 
 module.exports = LoginPage;

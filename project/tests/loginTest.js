@@ -1,6 +1,7 @@
 const {Builder, By} = require('selenium-webdriver');
 const {baseURL} = require('../config/config');
 const LoginPage = require('../pages/LoginPage');
+const {expect} = require('chai');
 
 async function runLoginTest(){
     let browser = await new Builder().forBrowser('chrome').build();
@@ -15,7 +16,12 @@ async function runLoginTest(){
 
         let loginPage = new LoginPage(browser);
         await loginPage.login('youremail@test.com', 'wrongPassword');
-        console.log("Login Attempted");
+        let errMessage = await loginPage.getErrorMessage();
+        console.log(`Error Message: ${errMessage}`);
+
+        expect(errMessage).to.equal('Your email or password is incorrect!');
+        console.log(`Assertion passed: correct error message shown`);
+
     }
     finally{
         await browser.quit();
