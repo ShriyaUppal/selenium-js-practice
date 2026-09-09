@@ -3,29 +3,28 @@ const {baseURL} = require('../config/config');
 const LoginPage = require('../pages/LoginPage');
 const {expect} = require('chai');
 
-async function runLoginTest(){
-    let browser = await new Builder().forBrowser('chrome').build();
-    try{
-        await browser.get(baseURL);
+describe("Login Tests", function (){
+    this.timeout(30000); //since selenium actions can be slow; Mocha default timeout is (2s) too short.
+    let browser;
     
-        let title = await browser.getTitle();
-        console.log(title);
+    before(async function(){
+        browser = await new Builder().forBrowser('chrome').build();
+    })
+
+    after(async function(){
+        await browser.quit();
+    })
+
+    it('should show an error message for invalid login credentials', async function(){
+        await browser.get(baseURL);
 
         let loginElement = await browser.findElement(By.partialLinkText('Login'));
         await loginElement.click();
-
+        
         let loginPage = new LoginPage(browser);
         await loginPage.login('youremail@test.com', 'wrongPassword');
-        let errMessage = await loginPage.getErrorMessage();
-        console.log(`Error Message: ${errMessage}`);
 
-        expect(errMessage).to.equal('Your email or password is incorrect!');
-        console.log(`Assertion passed: correct error message shown`);
-
-    }
-    finally{
-        await browser.quit();
-    }
-}
-
-runLoginTest();
+        let errorMessage = await loginPage.getErrorMessage();
+        expect(errorMessage).to.equal('Your email or password is incorrect!');
+    })
+})
