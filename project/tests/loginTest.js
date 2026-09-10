@@ -11,6 +11,9 @@ describe("Login Tests", function (){
         browser = await new Builder().forBrowser('chrome').build();
     })
 
+    beforeEach(async function(){
+        await browser.manage().deleteAllCookies();
+    })
     after(async function(){
         await browser.quit();
     })
@@ -26,5 +29,18 @@ describe("Login Tests", function (){
 
         let errorMessage = await loginPage.getErrorMessage();
         expect(errorMessage).to.equal('Your email or password is incorrect!');
+    })
+
+    it('should log in successfully with valid credentials', async function(){
+        await browser.get(baseURL);
+
+          let loginElement = await browser.findElement(By.partialLinkText('Login'));
+          await loginElement.click();
+
+          let loginPage = new LoginPage(browser);
+          await loginPage.login('shriyauppal1615@gmail.com', 'Uppalshriya@4');
+
+          let isSuccesfull = await loginPage.isLoginSuccessfull();
+          expect(isSuccesfull).to.be.true;
     })
 })

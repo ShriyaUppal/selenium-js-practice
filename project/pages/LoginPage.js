@@ -16,6 +16,11 @@ class LoginPage{
         await this.driver.executeScript('arguments[0].click();', button);
     }
 
+    async isLoginSuccessfull(){
+        let logoutLinks = await this.driver.findElements(By.css('a[href="/logout"]'));
+        return logoutLinks.length > 0;
+    }
+
     async getErrorMessage()
     {
         let errElement = await this.driver.findElement(By.xpath("//p[text()='Your email or password is incorrect!']"));
