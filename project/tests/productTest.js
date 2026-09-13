@@ -1,6 +1,7 @@
 const {Builder, By} = require('selenium-webdriver');
 const {baseURL, productsURL} = require('../config/config');
 const ProductsPage = require('../pages/ProductsPage');
+const chrome = require('selenium-webdriver/chrome');
 const {expect} = require('chai');
 
 describe('Products Test Cases', function(){
@@ -8,7 +9,14 @@ describe('Products Test Cases', function(){
     let browser;
 
     before(async function(){
-        browser = await new Builder().forBrowser('chrome').build();
+        let options = new chrome.Options();
+        options.setPageLoadStrategy('eager');
+        browser = await new Builder()
+        .forBrowser('chrome')
+        .setChromeOptions(options)
+        .build();
+
+        await browser.manage().setTimeouts({pageLoad: 15000});
     })
 
     beforeEach(async function(){
@@ -21,8 +29,6 @@ describe('Products Test Cases', function(){
 
     it('should search products by searching a product in search bar', async function(){
         await browser.get(productsURL);
-        // let productElement = await browser.findElement(By.linkText('Products'));
-        // await productElement.click();
 
         let productsPage = new ProductsPage(browser);
         await productsPage.searchProduct('T-Shirts');
