@@ -1,33 +1,32 @@
-const {Builder, By} = require('selenium-webdriver');
+const { Builder, By } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
-const {baseURL, testEmail, testPassword} = require('../config/config');
+const { baseURL, testEmail, testPassword } = require('../config/config');
 const LoginPage = require('../pages/LoginPage');
 const ProductsPage = require('../pages/ProductsPage');
 const CartPage = require('../pages/CartPage');
 const CheckoutPage = require('../pages/CheckoutPage');
-const {expect} = require('chai');
+const { expect } = require('chai');
 
-describe('Checkout Tests', function(){
+describe('Checkout Tests', function () {
     this.timeout(30000);
     let browser;
 
-    before(async function(){
+    before(async function () {
         let options = new chrome.Options();
         options.setPageLoadStrategy('eager');
         browser = await new Builder().forBrowser('chrome').setChromeOptions(options).build();
-        await browser.manage().setTimeouts({pageLoad: 15000});
+        await browser.manage().setTimeouts({ pageLoad: 15000 });
     })
 
-    after (async function(){
+    after(async function () {
         await browser.quit();
     })
 
-    it('should complete checkout flow successfully', async function(){
+    it('should complete checkout flow successfully', async function () {
         await browser.get(baseURL);
 
         let loginElement = await browser.findElement(By.partialLinkText('Login'));
         await loginElement.click();
-
         let loginPage = new LoginPage(browser);
         await loginPage.login(testEmail, testPassword);
 
@@ -38,6 +37,10 @@ describe('Checkout Tests', function(){
 
         let cartPage = new CartPage(browser);
         await cartPage.goToCart();
+
+        let itemCount = await cartPage.getCartItemCount();
+        console.log('Items in cart before checkout:', itemCount);
+        expect(itemCount).to.be.greaterThan(0);
 
         let checkoutPage = new CheckoutPage(browser);
         await checkoutPage.proceedToCheckout();
