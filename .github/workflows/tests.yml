@@ -1,0 +1,38 @@
+name: Run Selenium Tests
+
+on:
+    push:
+      branches: [main]
+    pull_request:
+      branches: [main]
+
+jobs:
+  test: 
+    runs-on: ubuntu-latest
+
+    defaults: 
+      run:
+        working-directory: project
+
+    steps: 
+      - name: Check out code
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with: 
+           node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Run tests
+        env:
+          TEST_EMAIL: ${{secrets.TEST_EMAIL}}
+          TEST_PASSWORD: ${{secrets.TEST_PASSWORD}}
+        run: npm test  
+
+

@@ -14,6 +14,11 @@ describe('Checkout Tests', function () {
     before(async function () {
         let options = new chrome.Options();
         options.setPageLoadStrategy('eager');
+        if (process.env.CI) {
+            options.addArguments('--headless=new');
+            options.addArguments('--no-sandbox');
+            options.addArguments('--disable-dev-shm-usage');
+        }
         browser = await new Builder().forBrowser('chrome').setChromeOptions(options).build();
         await browser.manage().setTimeouts({ pageLoad: 15000 });
     })
